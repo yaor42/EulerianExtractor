@@ -161,13 +161,9 @@ if fieldVarName in stepRepo[stepRepo.keys()[-1]].frames[-1].fieldOutputs.keys():
                         variableLabel=fieldVarName, 
                         outputPosition=variablePosition, 
                         refinement=refinement,)
-        if stepKey == stepRepo.keys()[-1]:
-            endFrame = 85
-        else:
-            endFrame = len(step.frames)
-        for frameV in range(endFrame):
+        for frame in step.frames:
             dataPoints = []
-            time = step.totalTime + step.frames[frameV].frameValue
+            time = step.totalTime + frame.frameValue
             dataPoints.append(time)
             output = getVarValue(stepInt, frameInt)
             dataPoints.append(output)
