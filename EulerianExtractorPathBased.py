@@ -56,6 +56,9 @@ stepRepo = odb.steps
 
 def createPath(poi):
     """ creates a very short path with the poi as middle point
+        
+        poi: a tuple of 3 float coordinates x, y, z
+        return: an Abaqus point-type path
     """
     firstPoint = (poi[0]-tol, poi[1]-tol, poi[2])
     secondPoint = (poi[0]+tol, poi[1]+tol, poi[2])
@@ -65,7 +68,12 @@ def createPath(poi):
     return pathPoi
 
 def getVarValue(stepInt, frameInt):
-    """ average the data value at two close points
+    """ averages the data value of XYData created by plot along path
+    method
+        
+        stepInt: an integer indicates step
+        frameInt: an integer indicates frame
+        return: a float number
     """
     pathData = session.XYDataFromPath(
                                   path=path, name='tmpPathData',
@@ -82,6 +90,12 @@ def getVarValue(stepInt, frameInt):
     return averageData
 
 def createXYDataObj(xySequence, xyDataName):
+    """ creates XYData object with extracted time history of field output
+        
+        xySequence: a tuple of (frame, field output)
+        xyDataName: name of XYData
+        return: a newly create XYData if no existed or an old XYData
+    """
     if xyDataName not in session.xyDataObjects.keys():
         resXYData = session.XYData(data=xySequence, name=xyDataName)
     else:
@@ -90,6 +104,13 @@ def createXYDataObj(xySequence, xyDataName):
     return resXYData
 
 def intString(s):
+    """ check if the string s represents a number for components of field
+        output
+        
+        s: a string
+        return: True if s represents a component number
+                False if s represents invariants
+    """
     try: 
         int(s)
         return True
@@ -98,6 +119,11 @@ def intString(s):
     return None
 
 def plotData(spatialXYData, xyDataName):
+    """ plot data in Abaqus/Visualization
+    
+        spatialXYData: XYData containing results at spatial location
+        xyDataName: plot name
+    """
     xyPlotName = xyDataName.replace('.', '')
     if xyPlotName not in session.xyPlots.keys():
         xyPlot = session.XYPlot(xyPlotName)
