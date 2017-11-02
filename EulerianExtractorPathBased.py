@@ -22,27 +22,32 @@ really appreciate if you keep the above information. Thanks.
 """
 # Define the odb file name, please include .odb extension at the end.
 # Type: string
-odbName = '2RR_T1-1000_T2-500_N20.odb'
+odbName = 'T12-Above_5-SF_5-E300.odb'
 
 # Define (x, y, z) coordinates of a spatial location of interest. The
 # result of interest of body (defined below) at this spatical location
 # will be extracted. 
 # Type: tupe of floats
-poi = (0, 0, 0)
+poi = (30, 1.45, 0)
 
 # Define the field output name of interest, should not include component.
 # Type: string
-fieldVarName = 'S'
+fieldVarName = 'U'
 # Define the component of the vector or tensor type field ouptut, 
 # Type: string
-# components are expressed by a string of numbers, eg. '1' for global x 
-fieldVarComponent = '11'   
+# pick one of the below and enclose it with ''
+# possible component values for vectors: 1, 2, 3
+# possible component values for tensors: 11, 22, 33, 12, 13, 23
+# possible invaraint values: Magnitude, Mises, Tresca, Pressure, 
+# Third Invariant, Max. Principal, Mid. Principal, Min. Principal, 
+# Max. In-Plane Principal, Min. In-Plane Principal, Out-of-Plane Principal
+fieldVarComponent = '3'   
 
 # A tolerence that controls the length of the very short path in extracting
 # field output value as discussed above. Change this tolerence to make sure
 # the path is inside (for solid elements) or pass through (for structural 
 # elements)the material body whose field output is to be extracted. 
-tol = 1e-5
+tol = 1e-2
 # End of input
 
 import numpy as np
@@ -60,8 +65,8 @@ def createPath(poi):
         poi: a tuple of 3 float coordinates x, y, z
         return: an Abaqus point-type path
     """
-    firstPoint = (poi[0]-tol, poi[1]-tol, poi[2])
-    secondPoint = (poi[0]+tol, poi[1]+tol, poi[2])
+    firstPoint = (poi[0]-tol, poi[1]-tol, poi[2]-tol)
+    secondPoint = (poi[0]+tol, poi[1]+tol, poi[2]+tol)
     twoEndPointsList = (firstPoint, secondPoint)
     pathPoi = session.Path(name='PathCoverPoi', type=POINT_LIST,
                            expression=twoEndPointsList)
@@ -118,7 +123,7 @@ def intString(s):
         return False
     return None
 
-def plotData(spatialXYData, xyDataName):
+def plotData(spatialXYData, fieldVarName, fieldVarComponent):
     """ plot data in Abaqus/Visualization
     
         spatialXYData: XYData containing results at spatial location
@@ -135,12 +140,16 @@ def plotData(spatialXYData, xyDataName):
     chart.setValues(curvesToPlot=(curve,))
     
     # set title
+    if intString(fieldVarComponent):
+        variableName = ''.join((fieldVarName, fieldVarComponent))
+    else:
+        variableName = ''.join((fieldVarName, '-', fieldVarComponent))
     poiStr = ''.join(('(', str(poi[0]), ', ', str(poi[1]), ', ', str(poi[2]), ')'))
-    xyPlot.title.setValues(text=''.join((xyDataName, ' @ ', poiStr)))
+    xyPlot.title.setValues(text=''.join((variableName, ' @ ', poiStr)))
     
     # set axes
     chart.axes1[0].axisData.setValues(title='Time')
-    chart.axes2[0].axisData.setValues(title=xyDataName)
+    chart.axes2[0].axisData.setValues(title=variableName)
     session.viewports['Viewport: 1'].setValues(displayedObject=xyPlot)
     return None
 
@@ -150,33 +159,14 @@ if fieldVarName in stepRepo[stepRepo.keys()[-1]].frames[-1].fieldOutputs.keys():
     session.viewports[viewportKey].setValues(displayedObject=odb)
     path = createPath(poi)
     step = odb.steps[odb.steps.keys()[-1]]
-    varType = step.frames[-1].fieldOutputs[fieldVarName].values[-1].type
-    
-    includeIntersections = True
-    if varType == SCALAR:
-        pass
-    elif varType == VECTOR:
-        # vector results (U, V, A, etc.) shown at nodes
-        variablePosition = NODAL
-    elif varType == TENSOR_2D_PLANAR:
-        # tensor results (S, LE, etc.) in 2D shown at integration points 
-        variablePosition = INTEGRATION_POINT
-    elif varType == TENSOR_2D_SURFACE:
-        # tensor results for beam elements shown at integration points
-        variablePosition = INTEGRATION_POINT
-    elif varType == TENSOR_3D_FULL:
-        variablePosition = INTEGRATION_POINT
-    elif varType == TENSOR_3D_PLANAR:
-        variablePosition = INTEGRATION_POINT
-    elif varType == TENSOR_3D_SURFACE:
-        pass
+    variablePosition = step.frames[-1].fieldOutputs[fieldVarName].locations[0].position
+    includeIntersections = True 
     
     if intString(fieldVarComponent):
         refinement = (COMPONENT, ''.join((fieldVarName, fieldVarComponent)))
-        xyDataName = ''.join((fieldVarName, fieldVarComponent))
     else:
         refinement = (INVARIANT, fieldVarComponent)
-        xyDataName = ''.join((fieldVarName, fieldVarComponent))
+    xyDataName = ''.join((fieldVarName, fieldVarComponent))
     
     for stepKey in stepRepo.keys():
         step = stepRepo[stepKey]
@@ -197,7 +187,7 @@ if fieldVarName in stepRepo[stepRepo.keys()[-1]].frames[-1].fieldOutputs.keys():
             print ''.join((stepKey, ': ', str(frameInt), '/', str(stepFrameNum)))
             frameInt += 1
     spatialXYData = createXYDataObj(xySequence=xySeq, xyDataName=xyDataName)
-    plotData(spatialXYData, xyDataName)
+    plotData(spatialXYData, fieldVarName, fieldVarComponent)
 else:    
     print ''.join((fieldVarName, ' is not a valid field output for this Odb.'))
 
