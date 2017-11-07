@@ -247,7 +247,7 @@ def intString(s):
     return None
 
 def sharedByElements(nodeSetPotential, instance):
-    """ create a dictionary: node labe as keys, a tuple of labels of elements 
+    """ create a dictionary: node label as keys, a tuple of labels of elements 
     that has the node as values
 
         nodeSetPotential: an Abaqus nodeSet object
