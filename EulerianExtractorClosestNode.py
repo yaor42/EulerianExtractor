@@ -284,7 +284,7 @@ def fieldVarComponentConstant(fieldVarComponent):
     if fieldVarComponent == 'MIN_INPLANE_PRINCIPAL': return MIN_INPLANE_PRINCIPAL
     if fieldVarComponent == 'OUTOFPLANE_PRINCIPAL': return OUTOFPLANE_PRINCIPAL
     return None
-    
+
 def getVarValue(fieldVarName, fieldVarComponent, frame, regionSet):
     """ get the field output value for region in a frame
         
