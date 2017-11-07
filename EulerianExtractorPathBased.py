@@ -56,7 +56,7 @@ from odbAccess import *
 import visualization
 from abaqusConstants import *
 
-odb = openOdb(path=odbName)
+odb = openOdb(path=odbName, readOnly=True)
 stepRepo = odb.steps
 
 def createPath(poi):

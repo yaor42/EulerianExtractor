@@ -60,7 +60,7 @@ from odbAccess import *
 import visualization
 from abaqusConstants import *
 
-odb = openOdb(path=odbName)
+odb = openOdb(path=odbName, readOnly=True)
 instance = odb.rootAssembly.instances[instanceName]
 stepRepo = odb.steps
 
