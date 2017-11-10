@@ -22,17 +22,17 @@ really appreciate if you keep the above information. Thanks.
 """
 # Define the odb file name, please include .odb extension at the end.
 # Type: string
-odbName = 'T12-Above_5-SF_5-E300.odb'
+odbName = '2RR_T1-1000_T2-500_N20-FullIntg.odb'
 
 # Define (x, y, z) coordinates of a spatial location of interest. The
 # result of interest of body (defined below) at this spatical location
 # will be extracted. 
 # Type: tupe of floats
-poi = (30, 1.45, 0)
+poi = (-1, 0, 0)
 
 # Define the field output name of interest, should not include component.
 # Type: string
-fieldVarName = 'U'
+fieldVarName = 'S'
 # Define the component of the vector or tensor type field ouptut, 
 # Type: string
 # pick one of the below and enclose it with ''
@@ -41,13 +41,13 @@ fieldVarName = 'U'
 # possible invaraint values: Magnitude, Mises, Tresca, Pressure, 
 # Third Invariant, Max. Principal, Mid. Principal, Min. Principal, 
 # Max. In-Plane Principal, Min. In-Plane Principal, Out-of-Plane Principal
-fieldVarComponent = '3'   
+fieldVarComponent = '11'   
 
 # A tolerence that controls the length of the very short path in extracting
 # field output value as discussed above. Change this tolerence to make sure
 # the path is inside (for solid elements) or pass through (for structural 
 # elements)the material body whose field output is to be extracted. 
-tol = 1e-2
+tol = 1e-5
 # End of input
 
 import numpy as np
@@ -80,7 +80,8 @@ def getVarValue(stepInt, frameInt):
         frameInt: an integer indicates frame
         return: a float number
     """
-    pathData = session.XYDataFromPath(
+    try:
+        pathData = session.XYDataFromPath(
                                   path=path, name='tmpPathData',
                                   includeIntersections=includeIntersections,
                                   shape=DEFORMED,
@@ -89,6 +90,8 @@ def getVarValue(stepInt, frameInt):
                                   labelType=TRUE_DISTANCE,
                                   step=stepInt,
                                   frame=frameInt)
+    except :
+        return
     yDataList = [x[1] for x in pathData.data]
     averageData = sum(yDataList)/float(len(yDataList))
     del session.xyDataObjects['tmpPathData']
@@ -182,6 +185,8 @@ if fieldVarName in stepRepo[stepRepo.keys()[-1]].frames[-1].fieldOutputs.keys():
             time = step.totalTime + frame.frameValue
             dataPoints.append(time)
             output = getVarValue(stepInt, frameInt)
+            if output is None:
+                continue
             dataPoints.append(output)
             xySeq += (tuple(dataPoints),)
             print ''.join((stepKey, ': ', str(frameInt), '/', str(stepFrameNum)))
