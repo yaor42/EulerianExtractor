@@ -65,8 +65,13 @@ def createPath(poi):
         poi: a tuple of 3 float coordinates x, y, z
         return: an Abaqus point-type path
     """
-    firstPoint = (poi[0]-tol, poi[1]-tol, poi[2]-tol)
-    secondPoint = (poi[0]+tol, poi[1]+tol, poi[2]+tol)
+    step = stepRepo[stepRepo.keys()[-1]]
+    if len(step.frames[0].fieldOutputs['U'].values[0].data) == 2:
+        firstPoint = (poi[0]-tol, poi[1]-tol, poi[2])
+        secondPoint = (poi[0]+tol, poi[1]+tol, poi[2])
+    else:
+        firstPoint = (poi[0]-tol, poi[1]-tol, poi[2]-tol)
+        secondPoint = (poi[0]+tol, poi[1]+tol, poi[2]+tol)
     twoEndPointsList = (firstPoint, secondPoint)
     pathPoi = session.Path(name='PathCoverPoi', type=POINT_LIST,
                            expression=twoEndPointsList)
@@ -90,7 +95,10 @@ def getVarValue(stepInt, frameInt):
                                   labelType=TRUE_DISTANCE,
                                   step=stepInt,
                                   frame=frameInt)
-    except :
+    except:
+        print ''.join(('Failed to extract data using Path from spatial ',
+                        'location in step:', str(stepInt), ' frame: ', 
+                        str(frameInt)))
         return
     yDataList = [x[1] for x in pathData.data]
     averageData = sum(yDataList)/float(len(yDataList))
@@ -156,12 +164,20 @@ def plotData(spatialXYData, fieldVarName, fieldVarComponent):
     session.viewports['Viewport: 1'].setValues(displayedObject=xyPlot)
     return None
 
+viewportKey = session.viewports.keys()[0]       # current viewport
+session.viewports[viewportKey].setValues(displayedObject=odb)
 xySeq = ()
-if fieldVarName in stepRepo[stepRepo.keys()[-1]].frames[-1].fieldOutputs.keys():
-    viewportKey = session.viewports.keys()[0]       # current viewport
-    session.viewports[viewportKey].setValues(displayedObject=odb)
+fieldOutputInOdb = False    # flag if output field is not in every step
+for stepKey in stepRepo.keys():
+    step = stepRepo[stepKey]
+    if fieldVarName not in step.frames[-1].fieldOutputs.keys():
+        print ''.join(('Requested ', fieldVarName, ' is not available in step ',
+                        stepKey, ' . Step time skipped.'))
+        continue
+    else:
+        fieldOutputInOdb = True
+    
     path = createPath(poi)
-    step = odb.steps[odb.steps.keys()[-1]]
     variablePosition = step.frames[-1].fieldOutputs[fieldVarName].locations[0].position
     includeIntersections = True 
     
@@ -171,28 +187,28 @@ if fieldVarName in stepRepo[stepRepo.keys()[-1]].frames[-1].fieldOutputs.keys():
         refinement = (INVARIANT, fieldVarComponent)
     xyDataName = ''.join((fieldVarName, fieldVarComponent))
     
-    for stepKey in stepRepo.keys():
-        step = stepRepo[stepKey]
-        stepInt = stepRepo.keys().index(step.name)
-        frameInt = 0
-        stepFrameNum = len(step.frames) - 1
-        session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
-                        variableLabel=fieldVarName, 
-                        outputPosition=variablePosition, 
-                        refinement=refinement,)
-        for frame in step.frames:
-            dataPoints = []
-            time = step.totalTime + frame.frameValue
-            dataPoints.append(time)
-            output = getVarValue(stepInt, frameInt)
-            if output is None:
-                continue
-            dataPoints.append(output)
-            xySeq += (tuple(dataPoints),)
-            print ''.join((stepKey, ': ', str(frameInt), '/', str(stepFrameNum)))
-            frameInt += 1
+    
+    stepInt = stepRepo.keys().index(step.name)
+    frameInt = 0
+    stepFrameNum = len(step.frames) - 1
+    session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+                    variableLabel=fieldVarName, 
+                    outputPosition=variablePosition, 
+                    refinement=refinement,)
+    for frame in step.frames:
+        dataPoints = []
+        time = step.totalTime + frame.frameValue
+        print ''.join((stepKey, ': ', str(frameInt), '/', str(stepFrameNum)))
+        dataPoints.append(time)
+        output = getVarValue(stepInt, frameInt)
+        frameInt += 1
+        if output is None:
+            continue
+        dataPoints.append(output)
+        xySeq += (tuple(dataPoints),)
     spatialXYData = createXYDataObj(xySequence=xySeq, xyDataName=xyDataName)
     plotData(spatialXYData, fieldVarName, fieldVarComponent)
-else:    
+
+if not fieldOutputInOdb:
     print ''.join((fieldVarName, ' is not a valid field output for this Odb.'))
 

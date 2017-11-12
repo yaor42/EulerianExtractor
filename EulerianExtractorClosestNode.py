@@ -18,17 +18,17 @@ really appreciate if you keep the above information. Thanks.
 """
 # Define the odb file name, please include .odb extension at the end.
 # Type: string
-odbName = 'T12-Above_5-SF_5-E300.odb'
+odbName = '2RR_T1-1000_T2-500_N20-FullIntg.odb'
 
 # Define (x, y, z) coordinates of a spatial location of interest. The
 # result of interest of body (defined below) at this spatical location
 # will be extracted. 
 # Type: tupe of floats
-poi = (30, 1.45, 0)
+poi = (-1, 0, 0)
 
 # Define the field output name of interest, should not include component.
 # Type: string
-fieldVarName = 'U'
+fieldVarName = 'S'
 
 # Define the component of the vector or tensor type field ouptut, 
 # Type: a string indicates component number or invariant SymbolicConstant
@@ -38,7 +38,7 @@ fieldVarName = 'U'
 # possible invaraint values: MAGNITUDE, MISES, TRESCA, PRESS, INV3, 
 # MAX_PRINCIPAL, MID_PRINCIPAL, MIN_PRINCIPAL, MAX_INPLANE_PRINCIPAL, 
 # MIN_INPLANE_PRINCIPAL, OUTOFPLANE_PRINCIPAL
-fieldVarComponent = '3'
+fieldVarComponent = '11'
 
 # Define the instance of model whose result is of interest
 # Type: string
@@ -50,8 +50,8 @@ instanceName = 'WEB-1'
 # it blank if all nodes of the instance are of interest. Format follows 
 # Abaqus nodal path. 
 # Type: string 
-potentialNodeRange = '30, 7028:8226:1, 29, 7014:7027:1, 28, 6615:7013:1, 27, 6601:6614:1, 25'        
-
+#potentialNodeRange = '30, 7028:8226:1, 29, 7014:7027:1, 28, 6615:7013:1, 27, 6601:6614:1, 25'        
+potentialNodeRange=''
 # End of input
 
 import numpy as np
@@ -147,12 +147,16 @@ def getNLabelsCoordSeq(frame, nodeSet):
     coordSeq = ()       # in cooresponded sequence of nLabelsSeq
     fieldValues = frame.fieldOutputs['U'].getSubset(region=nodeSet).values
     for v, n in zip(fieldValues, nodeSet.nodes):
+        # if problem is 2D, displacements is 2D, add 0 for 3rd component
+        if len(v.data) == 2:
+            coordSeq += (v.data + n.coordinates[0:2], )
+        else:
+            coordSeq += (v.data + n.coordinates, )
         nLabelsSeq += (n.label, )
-        coordSeq += (v.data + n.coordinates, )
     
     return nLabelsSeq, coordSeq
 
-def createCoordField(nodeSet, instance):
+def createCoordField(nodeSet, instance, stepKey):
     """ create an Abaqus scratchOdb that has field output 'COORD' as
     nodes' coordiantes in every frame
     
@@ -162,32 +166,31 @@ def createCoordField(nodeSet, instance):
                 created scratchOdb will be accessed through session
     """
     scratchOdb = session.ScratchOdb(odb=odb)
-    for stepKey in stepRepo.keys():
-        step = stepRepo[stepKey]
-        try:
-            ghostStep = scratchOdb.Step(name='Ghost'+stepKey, 
-                                        description='Ghost step for your step',
-                                        domain=TIME, timePeriod=step.timePeriod)
-        except OdbError:
-            print 'Ghost step has been created before. Old ghost step will be used.'
-            ghostStep = scratchOdb.steps['Ghost'+stepKey]
-        if len(ghostStep.frames) != len(step.frames):
-            frameNum = 0
-            for frame in step.frames:
-                ghostFrame = ghostStep.Frame(
-                    frameId=frame.frameId, 
-                    frameValue=frame.frameValue,
-                    description='Ghost frame')
-                ghostField = ghostFrame.FieldOutput(
-                    name='COORD', 
-                    description='initial coordinates plus displacements',
-                    type=VECTOR)
-                nLabelsSeq, coordSeq = getNLabelsCoordSeq(frame, nodeSet)
-                ghostField.addData(position=NODAL, instance=instance, 
-                                   labels=nLabelsSeq , data=coordSeq)
-                frameNum += 1
-                print ''.join(('Prepare coordinates for ', stepKey, ': ', 
-                               str(frameNum), '/', str(len(step.frames))))
+    step = stepRepo[stepKey]
+    try:
+        ghostStep = scratchOdb.Step(name='Ghost'+stepKey, 
+                                    description='Ghost step for your step',
+                                    domain=TIME, timePeriod=step.timePeriod)
+    except OdbError:
+        print 'Ghost step has been created before. Old ghost step will be used.'
+        ghostStep = scratchOdb.steps['Ghost'+stepKey]
+    if len(ghostStep.frames) != len(step.frames):
+        frameNum = 0
+        for frame in step.frames:
+            ghostFrame = ghostStep.Frame(
+                frameId=frame.frameId, 
+                frameValue=frame.frameValue,
+                description='Ghost frame')
+            ghostField = ghostFrame.FieldOutput(
+                name='COORD', 
+                description='initial coordinates plus displacements',
+                type=VECTOR)
+            nLabelsSeq, coordSeq = getNLabelsCoordSeq(frame, nodeSet)
+            ghostField.addData(position=NODAL, instance=instance, 
+                               labels=nLabelsSeq , data=coordSeq)
+            frameNum += 1
+            print ''.join(('Prepare coordinates for ', stepKey, ': ', 
+                           str(frameNum), '/', str(len(step.frames))))
     return None
 
 def closestNodeLabel(nodeSet, poi, step, frame, instance):
@@ -208,7 +211,10 @@ def closestNodeLabel(nodeSet, poi, step, frame, instance):
         coordFieldPotential = session.scratchOdbs[ghostOdbName].steps[
             'Ghost'+step.name].getFrame(
             frameValue=frame.frameValue).fieldOutputs['COORD']
-    poiA = np.array(poi)
+    if len(coordFieldPotential.values[0].data) == 2:
+        poiA = np.array(poi[0:2])
+    else:
+        poiA = np.array(poi)
     for nCoordValue in coordFieldPotential.values:
         nCoordData = nCoordValue.data
         distNew = np.linalg.norm(poiA-nCoordData)
@@ -342,45 +348,49 @@ def plotData(spatialXYData, fieldVarName, fieldVarComponent):
     return None
 
 xySeq = ()
-if fieldVarName in stepRepo[stepRepo.keys()[-1]].frames[-1].fieldOutputs.keys():
-    nodeSetName = 'potentialNodeSetForSearch'
-    nodeSetPotential = createNodeSet(potentialNodeRange, nodeSetName, instance)
+nodeSetName = 'potentialNodeSetForSearch'
+nodeSetPotential = createNodeSet(potentialNodeRange, nodeSetName, instance)
+fieldOutputInOdb = False    # flag if output field is not in every step
+for stepKey in stepRepo.keys():
+    step = stepRepo[stepKey]
+    if fieldVarName not in step.frames[-1].fieldOutputs.keys():
+        print ''.join(('Requested ', fieldVarName, ' is not available in step ',
+                        stepKey, ' . Step time skipped.'))
+        continue
+    else:
+        fieldOutputInOdb = True
     
     # create scratchOdb contains coordinates of nodes in the nodeSetPotential
     # at each frame if coordinates are not in field outputs
-    lastStep = stepRepo[odb.steps.keys()[-1]]
-    if 'COORD' not in lastStep.frames[-1].fieldOutputs.keys():
-        createCoordField(nodeSetPotential, instance)
+    if 'COORD' not in step.frames[-1].fieldOutputs.keys():
+        createCoordField(nodeSetPotential, instance, stepKey)
     
     # if field output requested is a tensor, create a dictionary with 
     # key=nodeLabel, item=elementsHaveNode
-    step = odb.steps[odb.steps.keys()[-1]]
     variablePosition = step.frames[-1].fieldOutputs[fieldVarName].locations[0].position
     if variablePosition == INTEGRATION_POINT:
         sharedByElementsDict = sharedByElements(nodeSetPotential, instance)
-    for stepKey in stepRepo.keys():
-        step = stepRepo[stepKey]
-        frameNum = 0
-        stepFrameNum = len(step.frames)
-        for frame in step.frames:
-            dataPoints = []
-            time = step.totalTime + frame.frameValue
-            dataPoints.append(time)
-            nLabel = closestNodeLabel(nodeSetPotential, poi, step, frame, instance)
-            regionSetName = str(nLabel) + stepKey + str(frame.frameId)
-            if variablePosition == NODAL:
-                regionSet = createNodeSet((nLabel,), regionSetName, instance)
-            elif variablePosition == INTEGRATION_POINT:
-                regionSet = createElementSet((nLabel,), regionSetName, instance)
-            output = getVarValue(fieldVarName, fieldVarComponent, frame, regionSet)
-            dataPoints.append(output)
-            xySeq += (tuple(dataPoints),)
-            frameNum += 1
-            print ''.join((stepKey, ': ', str(frameNum), '/', str(stepFrameNum)))
+    
+    frameNum = 0
+    stepFrameNum = len(step.frames)
+    for frame in step.frames:
+        dataPoints = []
+        time = step.totalTime + frame.frameValue
+        dataPoints.append(time)
+        nLabel = closestNodeLabel(nodeSetPotential, poi, step, frame, instance)
+        regionSetName = str(nLabel) + stepKey + str(frame.frameId)
+        if variablePosition == NODAL:
+            regionSet = createNodeSet((nLabel,), regionSetName, instance)
+        elif variablePosition == INTEGRATION_POINT:
+            regionSet = createElementSet((nLabel,), regionSetName, instance)
+        output = getVarValue(fieldVarName, fieldVarComponent, frame, regionSet)
+        dataPoints.append(output)
+        xySeq += (tuple(dataPoints),)
+        frameNum += 1
+        print ''.join((stepKey, ': ', str(frameNum), '/', str(stepFrameNum)))
     xyDataName = ''.join((fieldVarName, fieldVarComponent))
     spatialXYData = createXYDataObj(xySequence=xySeq, xyDataName=xyDataName)
     plotData(spatialXYData, fieldVarName, fieldVarComponent)
-    
-else:    
-    print ''.join((fieldVarName, ' is not an Abaqus field output. Please check spelling.'))
 
+if not fieldOutputInOdb:
+    print ''.join(('Field output ', fieldVarName, ' is not in ODB.'))
