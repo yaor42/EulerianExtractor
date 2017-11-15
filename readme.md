@@ -62,6 +62,7 @@ This method is based on finding the node ![](files/svgs/X_N^0.svg) from the inpu
 - for node-based results, the method directly returns the result from the closest node ![](files/svgs/X_N^0.svg)
   
   <img src="files/svgs/appQ_N.svg" height="20" alt="approximated value of quantity at x_0">
+  
   <img src="files/gifs/nodal_results_closest_node.gif">
   ![](files/gifs/nodal_results_closest_node.gif)
   
