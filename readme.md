@@ -103,11 +103,13 @@ Path based method script has 5 inputs at the beginning of the source file that u
 	`tol` is a float that defines the length of the path whose midpoint locates at `poi`. It is an important parameter. A success extraction requires the path to intersect with the material body in the model. If `tol` is too small, especially when the material body out of interest is a shell or a beam, the short path may not intersect with the material body considering the vibration in the simulation. On the other side, if it is too large, a longer path will extract results from a greater volume or area around `poi`, which may be off at some extent.
 	
 An example of the input to the path based script looks like:	
-''odbName = 'Job-4.odb'
-''poi = (-2.5, -1, 0)
-''fieldVarName = 'V'
-''fieldVarComponent = 'Magnitude' 
-''tol = 1e-2
+```python
+odbName = 'Job-4.odb'
+poi = (-2.5, -1, 0)
+fieldVarName = 'V'
+fieldVarComponent = 'Magnitude' 
+tol = 1e-2
+```
 #### EulerianExtractorClosestNode.py
 Closest node based method script has 6 inputs at the beginning of the source file that users need to modify to run:
 1. ODB file name
