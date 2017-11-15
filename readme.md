@@ -44,7 +44,6 @@ To bypass these limitations,  I implemented a second method, which is based on f
 This method is based on finding the node ~\(\boldsymbol{X}_{N}^{0}\)~ from the input instance of the model that is closest to the requested ~\(\boldsymbol{x}_0\)~, at each solution frame ~\(t\)~, then, extracting the value of requested field output with the following approximation:
 - for node-based results, the method directly returns the result from the closest node ~\(\boldsymbol{X}_{N}^{0}\)~
 ~$$Q=\bar{f}(\boldsymbol{x}_0, t)\approx \widehat{f}(\boldsymbol{X}_N^0, t),$$~
-
  ![](files/gifs/nodal_results_closest_node.gif)
 
 - for element-based results, the method further finds all elements that shares the closest node ~\(\boldsymbol{X}_{N}^{0}\)~, and average results at each integration point ~\(\boldsymbol{X}_{IP}^{i}\)~ of all those elements  with a total number of integration points of ~\(\Sigma\boldsymbol{X}_{IP}^i\) ~, regardless of full integration or reduced integration, and for beam, membrane, shell elements only considers in-plane integration points
