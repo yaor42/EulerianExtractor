@@ -69,9 +69,9 @@ This method is based on finding the node ![](files/svgs/X_N^0.svg) from the inpu
 
 - for element-based results, the method further finds all elements that shares the closest node ![](files/svgs/X_N^0.svg), and average results at each integration point ![](files/svgs/X_N^IP.svg) of all those elements  with a total number of integration points of ![](files/svgs/SumNumIP.svg), regardless of full integration or reduced integration, and for beam, membrane, shell elements only considers in-plane integration points
  
- <img src="files/svgs/appQ_IP.svg" height="40" alt="approximated value of quantity at x_0">
- 
- ![](files/gifs/IP_results_closest_node.gif)
+  <img src="files/svgs/appQ_IP.svg" height="40" alt="approximated value of quantity at x_0">
+  <br>
+  <img src="files/gifs/IP_results_closest_node.gif>
 
 The advantage of this method is the there always exists a closest node ![](files/svgs/X_N^0.svg) to the spatial point ![](/files/svgs/x_0.svg), even if the material moves out of it. The second example problem next shows a case where even the material has moved out of ![](/files/svgs/x_0.svg), the result extracted from ![](files/svgs/X_N^0.svg) is still want we want.
 
