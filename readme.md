@@ -62,7 +62,9 @@ This method is based on finding the node ![](files/svgs/X_N^0.svg) from the inpu
 - for node-based results, the method directly returns the result from the closest node ![](files/svgs/X_N^0.svg)
   
   <img src="files/svgs/appQ_N.svg" height="20" alt="approximated value of quantity at x_0">
+  <img src="files/gifs/nodal_results_closest_node.gif">
   ![](files/gifs/nodal_results_closest_node.gif)
+  
 
 
 - for element-based results, the method further finds all elements that shares the closest node ![](files/svgs/X_N^0.svg), and average results at each integration point ![](files/svgs/X_N^IP.svg) of all those elements  with a total number of integration points of ![](files/svgs/SumNumIP.svg), regardless of full integration or reduced integration, and for beam, membrane, shell elements only considers in-plane integration points
