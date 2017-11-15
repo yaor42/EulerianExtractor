@@ -137,7 +137,7 @@ Closest node based method script has 6 inputs at the beginning of the source fil
     `fieldVarName` is a string that defines the name of field output.
 4. Component of field output
 	
-    `fieldVarComponent` is a string that defines the component or invariant of the field output of interest if it is a vector or tensor. Possible values of vector and higher order tensor are same with that of the path based script, while possible values for invariants have a different form:
+    `fieldVarComponent` is a string that defines the component or invariant of the field output of interest if it is a vector or tensor. Possible values of vector and higher order tensor are same with that of the path based script, while possible values for _invariants have a different form from path based script_:
 	`MAGNITUDE`, `MISES`, `TRESCA`, `PRESS`, `INV3`, `MAX_PRINCIPAL`, `MID_PRINCIPAL`, `MIN_PRINCIPAL`, `MAX_INPLANE_PRINCIPAL`, `MIN_INPLANE_PRINCIPAL`, `OUTOFPLANE_PRINCIPAL`
 5. Instance Name
 	
