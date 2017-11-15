@@ -10,11 +10,11 @@ Essentially, physical quantities in solid mechanics are attached to material bod
 ### Lagrangian Representation
 In Lagrangian representation, we select a time instant and use the configuration of material body at that instant as a reference configuration. We build up a coordinates system in space at reference instant and label each material point by the coordinates it occupies at that instant. So each material point is mapped to a set of coordinates in the reference configuration by a mapping *R*:
 
-<img src="/files/svgs/P2Lag.svg" height="15" alt="map material point to Lagrangian coordinates">
+<img src="/files/svgs/P2Lag.svg" height="18" alt="map material point to Lagrangian coordinates">
 
 The inverse mapping maps the coordinates in reference configuration back to a material point *p*: 
 
-<img src="/files/svgs/Lag2P.svg" height="15" alt="map Lagrangian coordinates to material point">
+<img src="/files/svgs/Lag2P.svg" height="18" alt="map Lagrangian coordinates to material point">
 
 
 We can replace the argument of material point in the physical quantity function by the Lagrangian coordinates due to their one-to-one correspondence: 
