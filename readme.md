@@ -81,7 +81,7 @@ This method is based on finding the node ![](files/svgs/X_N^0.svg) from the inpu
   <br>
   <img src="files/gifs/IP_results_closest_node.gif">
 
-The advantage of this method is the there always exists a closest node ![](files/svgs/X_N^0.svg) to the spatial point ![](/files/svgs/x_0.svg), even if the material moves out of it. The second example problem next shows a case where even the material has moved out of ![](/files/svgs/x_0.svg), the result extracted from ![](files/svgs/X_N^0.svg) is still want we want.
+The advantage of this method is the there always exists a closest node ![](files/svgs/X_N^0.svg) to the spatial point ![](/files/svgs/x_0.svg), even if the material moves out of it. An example of this scenario can be found [here](http://yaor.me/abaqus-python-scripts-that-extract-time-history-of-eulerian-results#camberCase) .
 
 The drawback of this method is its expensive running time. Finding the closest node requires the current coordinates of each node, however, this output labeled by 'COORD' in Abaqus is not a default output. In this case, the current coordinates of each node have to be calculated from initial coordinates and displacements at each solution frame, which takes time. Thus, a potential node label series is made as an input to reduce the number of nodes that's in the searching range, of which the current coordinates calculation are required. If the Abaqus ODB file has 'COORD' output, the script will directly use this for computation, which would significantly reduce running time.
 
