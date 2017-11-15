@@ -21,7 +21,7 @@ Similarly, the inverse mapping maps a set of spatial coordinates back to the mat
 ~$$p=\chi_{t}^{-1}(\boldsymbol{x})= \chi_{t}^{-1}(x_1, x_2, x_3).$$~
 Again, we can replace the argument of material point in the function of a physical quantity:
 ~$$Q=f(p, t)=f(\chi_{t}^{-1}(\boldsymbol{x}), t)=\bar{f}(\boldsymbol{x}, t).$$~
-(img)
+![](/files/Lagrangian_vs_Eulerian_1-2.gif?raw=true)
 ### Transformation between Lagrangian and Eulerian Representations
 ~$$Q=\widehat{f}(\boldsymbol{X}, t)=\widehat{f}(\chi_{_{R}}^{-1}(\boldsymbol{x},t),t)=\bar{f}(\boldsymbol{x}, t),$$~
 ~$$Q= \bar{f}(\boldsymbol{x}, t)=\bar{f}(\chi_{_{R}}(\boldsymbol{X}, t), t)=\widehat{f}(\boldsymbol{X}, t).\label{L2E} \tag{2}$$~
