@@ -6,7 +6,7 @@ This project develops two general-purpose Abaqus Python scripts based on two met
 Essentially, physical quantities in solid mechanics are attached to material bodies to describe the state or property of material. Quantities of a material body can vary among its material points and change in time, thus mathematically, a physical quantity *Q* can be expressed as a function of material point *p* and time *t*:
 
 ![](files/svgs/quantityFun.svg)
-<img src="/files/svgs/quantityFun.svg" height="80" alt="quantity function">
+<img src="/files/svgs/quantityFun.svg" height="20" alt="quantity function">
 
 
  
