@@ -155,5 +155,6 @@ fieldVarName = 'V'
 1. Run in Abaqus/CAE from "File - Run Script"
 2. Run in Abaqus/CAE from kernel command interface 
 3. Run from command line
-## Example 
-to be added
+## Examples 
+Two examples of using output in Eulerian representation can be found in my blog [post](http://yaor.me/abaqus-python-scripts-that-extract-time-history-of-eulerian-results/).
+A simpler test example ODB will be provided later.
