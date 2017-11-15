@@ -93,11 +93,11 @@ Path based method script has 5 inputs at the beginning of the source file that u
 4. Component of field output
 	`fieldVarComponent` is a string that defines the component or invariant of the field output of interest if it is a vector or tensor.
 	
-    Possible component values for vectors: 1, 2, 3
+    Possible component values for vectors: `1`, `2`, `3`
 	
-    Possible component values for 2nd order tensors: 11, 22, 33, 12, 13, 23
+    Possible component values for 2nd order tensors: `11`, `22`, `33`, `12`, `13`, `23`
 	
-    Possible invariant values: Magnitude, Mises, Tresca, Pressure, Third Invariant, Max. Principal, Mid. Principal, Min. Principal, Max. In-Plane Principal, Min. In-Plane Principal, Out-of-Plane Principal
+    Possible invariant values: `Magnitude`, `Mises`, `Tresca`, `Pressure`, `Third Invariant`, `Max. Principal`, `Mid. Principal`, `Min. Principal`, `Max. In-Plane Principal`, `Min. In-Plane Principal`, `Out-of-Plane Principal`
 	Noted to put those keyword in quotation mark.
 5. Tolerance
 	`tol` is a float that defines the length of the path whose midpoint locates at `poi`. It is an important parameter. A success extraction requires the path to intersect with the material body in the model. If `tol` is too small, especially when the material body out of interest is a shell or a beam, the short path may not intersect with the material body considering the vibration in the simulation. On the other side, if it is too large, a longer path will extract results from a greater volume or area around `poi`, which may be off at some extent.
@@ -120,7 +120,7 @@ Closest node based method script has 6 inputs at the beginning of the source fil
 	`fieldVarName` is a string that defines the name of field output.
 4. Component of field output
 	`fieldVarComponent` is a string that defines the component or invariant of the field output of interest if it is a vector or tensor. Possible values of vector and higher order tensor are same with that of the path based script, while possible values for invariants have a different form:
-	MAGNITUDE, MISES, TRESCA, PRESS, INV3, MAX\_PRINCIPAL, MID\_PRINCIPAL, MIN\_PRINCIPAL, MAX\_INPLANE\_PRINCIPAL, MIN\_INPLANE\_PRINCIPAL, OUTOFPLANE\_PRINCIPAL
+	`MAGNITUDE`, `MISES`, `TRESCA`, `PRESS`, `INV3`, `MAX\_PRINCIPAL`, `MID\_PRINCIPAL`, `MIN\_PRINCIPAL`, `MAX\_INPLANE\_PRINCIPAL`, `MIN\_INPLANE\_PRINCIPAL`, `OUTOFPLANE\_PRINCIPAL`
 5. Instance Name
 	`instanceName` is a string that defines the name of the instance in the model from which the results are to be extracted.
 6. Potential nodes search range
