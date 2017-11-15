@@ -71,7 +71,7 @@ This method is based on finding the node ![](files/svgs/X_N^0.svg) from the inpu
  
   <img src="files/svgs/appQ_IP.svg" height="40" alt="approximated value of quantity at x_0">
   <br>
-  <img src="files/gifs/IP_results_closest_node.gif>
+  <img src="files/gifs/IP_results_closest_node.gif">
 
 The advantage of this method is the there always exists a closest node ![](files/svgs/X_N^0.svg) to the spatial point ![](/files/svgs/x_0.svg), even if the material moves out of it. The second example problem next shows a case where even the material has moved out of ![](/files/svgs/x_0.svg), the result extracted from ![](files/svgs/X_N^0.svg) is still want we want.
 
