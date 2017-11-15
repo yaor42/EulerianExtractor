@@ -1,15 +1,12 @@
 # Abaqus Python Scripts that Extract Time History of Eulerian Results
-~~<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [["\\(","\\)"], ['$','$']]}});</script>
-~~ 
-~~ <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-~~ [mathjax]
 
 This project develops two general-purpose Abaqus Python scripts based on two methods that can automatically extract the time history of field outputs at some spatial location of interest. The developer wishes the scripts can save some labor and willpower of analysts so their energy can be reserved for pure problem solving rather than tedious external processing.
 
 ## Physical Quantities in Lagrangian and Eulerian Representations
 Essentially, physical quantities in solid mechanics are attached to material bodies to describe the state or property of material. Quantities of a material body can vary among its material points and change in time, thus mathematically, a physical quantity *Q* can be expressed as a function of material point *p* and time *t*:
 ~$$Q=f(p, t).$$~
-(img) 
+![](files/svgs/quantityFun.svg?raw=true)
+ 
 ### Lagrangian Representation
 In Lagrangian representation, we select a time instant and use the configuration of material body at that instant as a reference configuration. We build up a coordinates system in space at reference instant and label each material point by the coordinates it occupies at that instant. So each material point is mapped to a set of coordinates in the reference configuration by a mapping *R*:
 ~$$\boldsymbol{X}=(X_1, X_2, X_3)=R(p).$$~
