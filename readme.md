@@ -10,11 +10,11 @@ Essentially, physical quantities in solid mechanics are attached to material bod
 ### Lagrangian Representation
 In Lagrangian representation, we select a time instant and use the configuration of material body at that instant as a reference configuration. We build up a coordinates system in space at reference instant and label each material point by the coordinates it occupies at that instant. So each material point is mapped to a set of coordinates in the reference configuration by a mapping *R*:
 
-<img src="/files/svgs/P2Lag.svg" height="20" alt="map material point to Lagrangian coordinates">
+<img src="/files/svgs/P2Lag.svg" height="15" alt="map material point to Lagrangian coordinates">
 
 The inverse mapping maps the coordinates in reference configuration back to a material point *p*: 
 
-<img src="/files/svgs/Lag2P.svg" height="20" alt="map Lagrangian coordinates to material point">
+<img src="/files/svgs/Lag2P.svg" height="15" alt="map Lagrangian coordinates to material point">
 
 
 We can replace the argument of material point in the physical quantity function by the Lagrangian coordinates due to their one-to-one correspondence: 
@@ -33,6 +33,7 @@ Similarly, the inverse mapping maps a set of spatial coordinates back to the mat
 
 
 Again, we can replace the argument of material point in the function of a physical quantity:
+
 <img src="files/svgs/QinEuler.svg" height="20" alt="quantity in Eulerian representation">
 
 ![](files/gifs/Lagrangian_vs_Eulerian_1.gif)
@@ -61,14 +62,16 @@ This method is based on finding the node ![](files/svgs/X_N^0.svg) from the inpu
 - for node-based results, the method directly returns the result from the closest node ![](files/svgs/X_N^0.svg)
 
  <img src="files/svgs/appQ_N.svg" height="20" alt="approximated value of quantity at x_0">
+ 
  ![](files/gifs/nodal_results_closest_node.gif)
 
 - for element-based results, the method further finds all elements that shares the closest node ![](files/svgs/X_N^0.svg), and average results at each integration point ![](files/svgs/X_N^IP.svg) of all those elements  with a total number of integration points of ![](files/svgs/SumNumIP.svg), regardless of full integration or reduced integration, and for beam, membrane, shell elements only considers in-plane integration points
  
  <img src="files/svgs/appQ_IP.svg" height="20" alt="approximated value of quantity at x_0">
+ 
  ![](files/gifs/IP_results_closest_node.gif)
 
-The advantage of this method is the there always exists a closest node ~\(\boldsymbol{X}_{N}^{0}\)~ to the spatial point ~\(\boldsymbol{x}_{0}\)~, even if the material moves out of it. The second example problem next shows a case where even the material has moved out of ~\(\boldsymbol{x}_{0}\)~, the result extracted from ~\(\boldsymbol{X}_{N}^{0}\)~ is still want we want.
+The advantage of this method is the there always exists a closest node ![](files/svgs/X_N^0.svg) to the spatial point ![](/files/svgs/x_0.svg), even if the material moves out of it. The second example problem next shows a case where even the material has moved out of ![](/files/svgs/x_0.svg), the result extracted from ![](files/svgs/X_N^0.svg) is still want we want.
 
 The drawback of this method is its expensive running time. Finding the closest node requires the current coordinates of each node, however, this output labeled by 'COORD' in Abaqus is not a default output. In this case, the current coordinates of each node have to be calculated from initial coordinates and displacements at each solution frame, which takes time. Thus, a potential node label series is made as an input to reduce the number of nodes that's in the searching range, of which the current coordinates calculation are required. If the Abaqus ODB file has 'COORD' output, the script will directly use this for computation, which would significantly reduce running time.
 
