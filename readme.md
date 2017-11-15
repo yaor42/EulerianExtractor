@@ -45,12 +45,12 @@ This method is based on finding the node ~\(\boldsymbol{X}_{N}^{0}\)~ from the i
 - for node-based results, the method directly returns the result from the closest node ~\(\boldsymbol{X}_{N}^{0}\)~
 ~$$Q=\bar{f}(\boldsymbol{x}_0, t)\approx \widehat{f}(\boldsymbol{X}_N^0, t),$$~
 
-![](files/gifs/nodal_results_closest_node.gif)
+ ![](files/gifs/nodal_results_closest_node.gif)
 
 - for element-based results, the method further finds all elements that shares the closest node ~\(\boldsymbol{X}_{N}^{0}\)~, and average results at each integration point ~\(\boldsymbol{X}_{IP}^{i}\)~ of all those elements  with a total number of integration points of ~\(\Sigma\boldsymbol{X}_{IP}^i\) ~, regardless of full integration or reduced integration, and for beam, membrane, shell elements only considers in-plane integration points
 ~$$Q=\bar{f}(\boldsymbol{x}_0, t)\approx \frac{1}{\Sigma\boldsymbol{X}_{IP}^i} \Sigma\, \widehat{f}(\boldsymbol{X}_{IP}^i, t).$$~
 
-![](files/gifs/IP_results_closest_node.gif)
+ ![](files/gifs/IP_results_closest_node.gif)
 
 The advantage of this method is the there always exists a closest node ~\(\boldsymbol{X}_{N}^{0}\)~ to the spatial point ~\(\boldsymbol{x}_{0}\)~, even if the material moves out of it. The second example problem next shows a case where even the material has moved out of ~\(\boldsymbol{x}_{0}\)~, the result extracted from ~\(\boldsymbol{X}_{N}^{0}\)~ is still want we want.
 
