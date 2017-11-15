@@ -150,6 +150,7 @@ An example of the closest node based script look like:
 odbName = 'Job-4.odb'
 poi = (-2.5, -1, 0)
 fieldVarName = 'V'
+fieldVarComponent = 'MAGNITUDE`'
 instanceName = 'WEB-1'
 potentialNodeRange = '30, 7028:8226:1, 29, 7014:7027:1, 28, 6615:7013:1, 27, 6601:6614:1, 25'
 ```
