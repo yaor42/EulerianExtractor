@@ -6,6 +6,7 @@ This project develops two general-purpose Abaqus Python scripts based on two met
 Essentially, physical quantities in solid mechanics are attached to material bodies to describe the state or property of material. Quantities of a material body can vary among its material points and change in time, thus mathematically, a physical quantity *Q* can be expressed as a function of material point *p* and time *t*:
 ~$$Q=f(p, t).$$~
 ![](files/svgs/quantityFun.svg?raw=true)
+![](https://raw.githubusercontent.com/yaor42/EulerianExtractor/master/files/svgs/quantityFun.svg)
  
 ### Lagrangian Representation
 In Lagrangian representation, we select a time instant and use the configuration of material body at that instant as a reference configuration. We build up a coordinates system in space at reference instant and label each material point by the coordinates it occupies at that instant. So each material point is mapped to a set of coordinates in the reference configuration by a mapping *R*:
@@ -22,7 +23,7 @@ Similarly, the inverse mapping maps a set of spatial coordinates back to the mat
 Again, we can replace the argument of material point in the function of a physical quantity:
 ~$$Q=f(p, t)=f(\chi_{t}^{-1}(\boldsymbol{x}), t)=\bar{f}(\boldsymbol{x}, t).$$~
 
-![](files/Lagrangian_vs_Eulerian_1.gif)
+![](files/gifs/Lagrangian_vs_Eulerian_1.gif)
 
 ### Transformation between Lagrangian and Eulerian Representations
 ~$$Q=\widehat{f}(\boldsymbol{X}, t)=\widehat{f}(\chi_{_{R}}^{-1}(\boldsymbol{x},t),t)=\bar{f}(\boldsymbol{x}, t),$$~
