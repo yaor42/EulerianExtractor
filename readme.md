@@ -144,7 +144,7 @@ Closest node based method script has 6 inputs at the beginning of the source fil
     `instanceName` is a string that defines the name of the instance in the model from which the results are to be extracted.
 6. Potential nodes search range
 	
-    `potentialNodeRange` is a string that defines the potential nodes search ranges for the closest node. The purpose of this input is to reduce computational cost. If it is left black, all the nodes in the instance of `instanceName` will be searched. The format of the string adopts that of Abaqus to define node list, specifically a comma separates individual node labels and a colon separates a series of nodes labels in the format of start label:end label:inc. For example, `1,3:8:2` returns nodes of label `1,3,5,7`
+    `potentialNodeRange` is a string that defines the potential nodes search ranges for the closest node. The purpose of this input is to reduce computational cost. If it is left black, all the nodes in the instance of `instanceName` will be searched. The format of the string adopts that of Abaqus to define node list, specifically a comma separates individual node labels and a colon separates a series of nodes labels in the format of `startLabel:endLabel:inc`. For example, `1,3:8:2` returns nodes of label `1,3,5,7`
 An example of the closest node based script look like:
 ```python
 odbName = 'Job-4.odb'
