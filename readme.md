@@ -161,3 +161,4 @@ potentialNodeRange = '30, 7028:8226:1, 29, 7014:7027:1, 28, 6615:7013:1, 27, 660
 ## Examples 
 Two examples of using output in Eulerian representation can be found in my blog [post](http://yaor.me/abaqus-eulerian-results/).
 A simpler test example ODB will be provided later.
+
